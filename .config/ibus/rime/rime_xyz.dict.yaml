@@ -3,15 +3,17 @@
 
 ---
 name: rime_xyz
-version: "2024-01-24"
+version: "2024-02-03"
 import_tables:
   - cn_dicts/8105
-  - cn_dicts/base
-  - cn_dicts/ext
+  - cn_dicts/chengyu
+  - cn_dicts/poem
+  - cn_dicts/place
+  - cn_dicts/celebrity
+  - cn_dicts/medical
+  - cn_dicts/food
   - cn_dicts/computer
   - cn_dicts/game
   - cn_dicts/movie
   - cn_dicts/music
-  - en_dicts/en
-  - en_dicts/en_ext
-  - en_dicts/computer
+  - cn_dicts/animal
