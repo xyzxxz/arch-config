@@ -1,0 +1,20 @@
+# Rime dictionary
+# encoding: utf-8
+#
+# ------- 计算机词库 -------
+
+---
+name: computer
+version: "2024-01-14"
+sort: by_weight
+...
+hash
+algorithm
+STL
+Standard
+Template
+Library
+Dijkstra
+Bellman-Ford
+SPFA
+Floyd

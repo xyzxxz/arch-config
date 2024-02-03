@@ -1,0 +1,97 @@
+# Rime schema
+# encoding: utf-8
+
+schema: 
+  schema_id: rime_xyz
+  name: xyzpinyin
+  version: "2024-01-24"
+  author:
+    - xyzxxz
+  description: "xyz pinyin"
+  dependencies:
+    - melt_eng
+    - liangfen
+
+switches:
+  - name: ascii_mode
+    states: [ 中, A ]
+    reset: 0
+  - name: ascii_punct
+    states: [ ¥, $ ]
+    reset: 0
+  - name: full_shape
+    states: [ 半角, 全角 ]
+    reset: 0
+
+engine:
+  processors:
+    - lua_processor@select_character
+    - ascii_composer
+    - recognizer
+    - key_binder
+    - speller
+    - punctuator
+    - selector
+    - navigator
+    - express_editor
+  segmentors:
+    - ascii_segmentor
+    - matcher
+    - abc_segmentor
+    - punct_segmentor
+    - fallback_segmentor
+  translators:
+    - punct_translator
+    - script_translator
+    - lua_translator@date_translator      # 时间、日期、星期
+    - lua_translator@lunar                # 农历
+    - table_translator@custom_phrase      # 自定义短语 custom_phrase.txt
+    - table_translator@melt_eng           # 英文输入
+    - reverse_lookup_translator@liangfen  # 反查，两分拼字
+    - lua_translator@unicode              # Unicode
+    - lua_translator@number_translator    # 数字、金额大写
+  filters:
+    - lua_filter@corrector                # 错音错字提示
+    - simplifier@emoji                    # Emoji
+    - simplifier@traditionalize           # 简繁切换
+    - lua_filter@v_filter                 # v 模式 symbols 优先（否则是英文优先）
+    - lua_filter@autocap_filter           # 英文自动大写
+    - lua_filter@reduce_english_filter    # 降低部分英语单词在候选项的位置
+    - uniquifier                          # 去重
+
+# 主翻译器，拼音
+translator:
+  dictionary: rime_xyz        # 挂载词库 rime_xyz.dict.yaml
+  spelling_hints: 8           # corrector.lua ：为了让错音错字提示的 Lua 同时适配全拼双拼，将拼音显示在 comment 中
+  always_show_comments: true  # corrector.lua ：Rime 默认在 preedit 等于 comment 时取消显示 comment，这里强制一直显示，供 corrector.lua 做判断用。
+  initial_quality: 1.2        # 拼音的权重应该比英文大
+  preedit_format:             # preedit_format 影响到输入框的显示和“Shift+回车”上屏的字符
+    - xform/([jqxy])v/$1u/    # 显示为 ju qu xu yu
+    - xform/([nl])v/$1ü/    # 显示为 nü lü
+    - xform/([nl])ue/$1üe/  # 显示为 nüe lüe
+    # - xform/([nl])v/$1v/      # 显示为 nv lv
+    # - xform/([nl])ue/$1ve/    # 显示为 nve lve
+
+# 次翻译器，英文
+melt_eng:
+  dictionary: melt_eng     # 挂载词库 melt_eng.dict.yaml
+  enable_sentence: false   # 禁止造句
+  enable_user_dict: false  # 禁用用户词典
+  initial_quality: 1.1     # 初始权重
+  comment_format:          # 自定义提示码
+    - xform/.*//           # 清空提示码
+
+
+# 自定义短语：custom_phrase.txt
+custom_phrase:
+  dictionary: ""
+  user_dict: custom_phrase  # 可以修改这里，改成自己的 txt 文件
+  db_class: stabledb
+  enable_completion: false  # 补全提示
+  enable_sentence: false    # 禁止造句
+  initial_quality: 99       # custom_phrase 的权重应该比 pinyin 和 melt_eng 大
+
+# 从 default 继承快捷键
+key_binder:
+  import_preset: default # 从 default.yaml 继承通用的
+  # bindings:            # 也可以再增加方案专有的
