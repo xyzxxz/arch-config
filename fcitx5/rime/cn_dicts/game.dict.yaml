@@ -1,9 +1,0 @@
-# Rime dictionary
-# encoding: utf-8
-#
-# ------- 游戏词库 -------
-
----
-name: game
-version: "2024-01-14"
-sort: by_weight

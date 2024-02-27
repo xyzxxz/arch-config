@@ -1,9 +1,0 @@
-# Rime dictionary
-# encoding: utf-8
-#
-# ------- 音乐词库 -------
-
----
-name: music
-version: "2024-01-14"
-sort: by_weight
